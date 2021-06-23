@@ -1,0 +1,21 @@
+# Ignore everything in this directory
+target
+mvnw
+mvnw.cmd
+.vscode
+.classpath
+.settings
+.project
+*.i??
+.idea
+.metadata
+.recommenders
+.mvn
+.DS_Store
+.gradle
+build
+**/.vagrant/
+**/*.log
+**/.factorypath
+.vagrant/
+*.log
