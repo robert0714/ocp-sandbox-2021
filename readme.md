@@ -13,10 +13,10 @@ sudo mv oc /usr/local/bin/oc
 sudo mv kubectl /usr/local/bin/kubectl
 sudo usermod -aG docker $USER
 
-oc login --token=sha256~XAjrSGkYh5-PZqyDS9iJYHbRtM7ym2o5tiExFLuwpvg --server=https://api.sandbox.x8i5.p1.openshiftapps.com:6443
+oc login --token=sha256~Ma2K1jVjyKqIdV2OMHDk36ysKWXEaC0wCqFHJqDfoiA --server=https://api.sandbox.x8i5.p1.openshiftapps.com:6443
 
 export cluster_name=api-sandbox-x8i5-p1-openshiftapps-com:6443
-export token=sha256~XAjrSGkYh5-PZqyDS9iJYHbRtM7ym2o5tiExFLuwpvg
+export token=sha256~Ma2K1jVjyKqIdV2OMHDk36ysKWXEaC0wCqFHJqDfoiA
 export username=robert0714-lee
 export api_server_url=https://api.sandbox.x8i5.p1.openshiftapps.com:6443
 

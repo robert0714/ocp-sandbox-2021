@@ -1,0 +1,47 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: tmf622
+  labels:
+    app: tmf622
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tmf622
+  template:
+    metadata:
+      labels:
+        app: tmf622
+    spec:
+      containers:
+      - name: tmf622
+        image: image-registry.openshift-image-registry.svc:5000/robert0714-lee-dev/tmf622@sha256:535a54ea415b9cb8f61e60a0b202e75ffd4cea6ecf4f27ba5f52f3c3d0d7bf76
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: compares-data
+          mountPath: /app/comparelogs
+        env:
+        - name: MEMORY_REQUEST
+          valueFrom:
+            resourceFieldRef:
+              containerName: tmf622
+              resource: requests.memory
+        - name: MEMORY_LIMIT
+          valueFrom:
+            resourceFieldRef:
+              containerName: tmf622
+              resource: limits.memory
+        resources:
+          requests: 
+            memory: 700Mi
+          limits: 
+            memory: 1.4Gi  
+      volumes:
+      - name: compares-data
+        persistentVolumeClaim:
+          claimName: tmf622-compares
+      
+
