@@ -7,5 +7,6 @@ spec:
     requests:
       storage: 2Gi
   volumeMode: Filesystem
+  #storageClassName: managed-nfs-storage 
   accessModes:
     - ReadWriteOnce

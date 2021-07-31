@@ -16,8 +16,13 @@ spec:
     spec:
       containers:
       - name: tmf622
-        image: image-registry.openshift-image-registry.svc:5000/robert0714-lee-dev/tmf622@sha256:535a54ea415b9cb8f61e60a0b202e75ffd4cea6ecf4f27ba5f52f3c3d0d7bf76
-        imagePullPolicy: IfNotPresent
+        image: >-
+          image-registry.openshift-image-registry.svc:5000/robert0714-lee-dev/tmf622:latest
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: http
         ports:
         - containerPort: 8080
         volumeMounts:
@@ -36,9 +41,9 @@ spec:
               resource: limits.memory
         resources:
           requests: 
-            memory: 700Mi
+            memory: 1G
           limits: 
-            memory: 1.4Gi  
+            memory: 1.5Gi  
       volumes:
       - name: compares-data
         persistentVolumeClaim:
