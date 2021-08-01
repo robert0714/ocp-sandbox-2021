@@ -8,15 +8,17 @@
 
 wget https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz
 sudo tar -xvzf oc.tar.gz  
+sudo curl -L https://mirror.openshift.com/pub/openshift-v4/clients/odo/latest/odo-linux-amd64 -o /usr/local/bin/odo
+sudo chmod +x /usr/local/bin/odo
 sudo chmod +x  oc  kubectl 
 sudo mv oc /usr/local/bin/oc
 sudo mv kubectl /usr/local/bin/kubectl
 sudo usermod -aG docker $USER
 
-oc login --token=sha256~mKC4RbyuOdazuSBItJmltl1oMhGgsJu4XS51_VWbnRY --server=https://api.sandbox.x8i5.p1.openshiftapps.com:6443
+oc login --token=sha256~5XQJvUxMOcSrEBBVYl6ai7WH6SxjJMvte4C0ig7VD8w --server=https://api.sandbox.x8i5.p1.openshiftapps.com:6443
 
 export cluster_name=api-sandbox-x8i5-p1-openshiftapps-com:6443
-export token=sha256~mKC4RbyuOdazuSBItJmltl1oMhGgsJu4XS51_VWbnRY
+export token=sha256~5XQJvUxMOcSrEBBVYl6ai7WH6SxjJMvte4C0ig7VD8w
 export username=robert0714-lee
 export api_server_url=https://api.sandbox.x8i5.p1.openshiftapps.com:6443
 
@@ -32,7 +34,7 @@ kubectl config set-context $context --user=$username/$cluster_name   --namespace
 ### Exposing the registry 
 https://docs.openshift.com/container-platform/4.7/registry/securing-exposing-registry.html
 
-You must administrato
+You must administrator
 
 
 1. Set DefaultRoute to True:
@@ -213,6 +215,10 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 ```
 ### With Helm
+https://docs.openshift.com/container-platform/4.7/cli_reference/helm_cli/getting-started-with-helm-on-openshift-container-platform.html
+
+
+
 
 ```bash
 $ helm install stable/nfs-client-provisioner --set nfs.server=x.x.x.x --set nfs.path=/exported/path
@@ -267,3 +273,12 @@ https://www.youtube.com/watch?v=oPLQs-lAAYk
 
 https://github.com/redhat-developer-demos/spring-petclinic
 
+
+# Developer CLI (odo)
+https://docs.openshift.com/container-platform/4.7/cli_reference/developer_cli_odo/creating_and_deploying_applications_with_odo/creating-an-application-with-a-database.html
+
+# Services Access Using Name
+
+```
+http://service-name.namespace.svc.cluster.local:port-number
+```

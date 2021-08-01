@@ -58,3 +58,20 @@ echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers
 curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/Release.key | sudo apt-key add -
 sudo apt-get -y update
 sudo apt-get -y install podman
+
+#
+# Install Helm.
+#
+#curl https://baltocdn.com/helm/signing.asc | sudo apt-key add -
+#sudo apt-get install apt-transport-https --yes
+#echo "deb https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+#sudo apt-get update
+#sudo apt-get install helm
+
+
+#
+# Install OCP's Helm.
+# 
+sudo curl -L https://mirror.openshift.com/pub/openshift-v4/clients/helm/latest/helm-linux-amd64 -o /usr/local/bin/helm
+sudo chmod +x /usr/local/bin/helm
+helm version
