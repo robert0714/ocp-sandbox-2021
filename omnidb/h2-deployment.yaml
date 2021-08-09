@@ -1,0 +1,45 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: h2
+  labels:
+    app: h2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: h2
+  template:
+    metadata:
+      labels:
+        app: h2
+    spec:
+      containers:
+      - name: h2
+        image: >-
+          robert0714/h2console:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: MEMORY_REQUEST
+          valueFrom:
+            resourceFieldRef:
+              containerName: h2
+              resource: requests.memory
+        - name: MEMORY_LIMIT
+          valueFrom:
+            resourceFieldRef:
+              containerName: h2
+              resource: limits.memory
+        - name: TZ
+          value: 'Asia/Taipei'
+        - name: JAVA_OPTS
+          value: '-Xms512m -Xmx1536m '       
+        resources:
+          requests: 
+            memory: 500Mi
+          limits: 
+            memory: 1500Mi 
+      
+

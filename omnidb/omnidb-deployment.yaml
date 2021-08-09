@@ -1,0 +1,51 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: omnidb
+  labels:
+    app: omnidb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: omnidb
+  template:
+    metadata:
+      labels:
+        app: omnidb
+    spec:
+      containers:
+      - name: omnidb
+        image: >-
+          robert0714/omnidb:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        - containerPort: 25482
+        volumeMounts:
+        - name: omnidbdata
+          mountPath: /etc/omnidb
+        env:
+        - name: MEMORY_REQUEST
+          valueFrom:
+            resourceFieldRef:
+              containerName: omnidb
+              resource: requests.memory
+        - name: MEMORY_LIMIT
+          valueFrom:
+            resourceFieldRef:
+              containerName: omnidb
+              resource: limits.memory
+        - name: TZ
+          value: 'Asia/Taipei'        
+        resources:
+          requests: 
+            memory: 1Gi
+          limits: 
+            memory: 1500Mi  
+      volumes:
+      - name: omnidbdata
+        persistentVolumeClaim:
+          claimName: omnidbdata
+      
+

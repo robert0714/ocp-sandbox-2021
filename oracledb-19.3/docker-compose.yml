@@ -1,0 +1,42 @@
+version: '2'
+ 
+services: 
+  xe19c :
+  # https://github.com/oracle/docker-images/tree/master/OracleDatabase/SingleInstance
+  # By default, the password verification is disable(password never expired)
+  # hostname: localhost
+  # sid: xe
+  # username: system 
+  # password: oracle
+  # docker exec -it  xe19c  sqlplus / as sysdba;
+  # docker exec -it  xe19c  sqlplus system/oracle@ORCL
+  # SQL> show con_name;
+  # alter session set container=CDB$ROOT;
+  # CREATE USER c##RAADM_OWNER IDENTIFIED BY "oracle" DEFAULT TABLESPACE USERS TEMPORARY TABLESPACE TEMP;
+  # grant create session, grant any privilege to c##RAADM_OWNER;
+  # GRANT UNLIMITED TABLESPACE TO  c##RAADM_OWNER;
+  # GRANT CREATE ANY SEQUENCE, ALTER ANY SEQUENCE, DROP ANY SEQUENCE, SELECT ANY SEQUENCE TO  c##RAADM_OWNER ;
+  # grant create table, create database link to c##RAADM_OWNER;
+  #
+    container_name: xe19c
+    image: oracle/database:19.3.0-ee
+    shm_size: 1g
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - ${PWD}/oracle_data/data:/opt/oracle/oradata
+    environment:
+    - TZ=Asia/Taipei
+    - ORACLE_PDB=orcl
+    - ORACLE_PWD=oracle
+    - ORACLE_MEM=4000
+    - ORACLE_CHARACTERSET=AL32UTF8
+    - ORACLE_DISABLE_ASYNCH_IO=true
+    - ORACLE_ALLOW_REMOTE=true
+    - ORACLE_ENABLE_XDB=true
+    - processes=1000
+    - sessions=1105
+    - transactions=1215
+#    network_mode:  "host"
+    ports: 
+     - "1521:1521" 
+     - "5500:5500"

@@ -1,0 +1,67 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: oralce19c
+  labels:
+    app: oralce19c
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oralce19c
+  template:
+    metadata:
+      labels:
+        app: oralce19c
+      annotations:
+        sidecar.istio.io/inject: 'false'
+    spec:
+      containers:
+      - name: oralce19c
+        image: >-
+          image-registry.openshift-image-registry.svc:5000/bcrm2/oracle-database:19.3.0-ee
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 1521
+        - containerPort: 5500
+        volumeMounts:
+        - name: oradata
+          mountPath: /opt/oracle/oradata
+        env:
+        - name: MEMORY_REQUEST
+          valueFrom:
+            resourceFieldRef:
+              containerName: oralce19c
+              resource: requests.memory
+        - name: MEMORY_LIMIT
+          valueFrom:
+            resourceFieldRef:
+              containerName: oralce19c
+              resource: limits.memory
+        - name: TZ
+          value: 'Asia/Taipei'
+        - name: ORACLE_PDB
+          value: 'orcl'
+        - name: ORACLE_PWD
+          value: 'oracle'
+        - name: ORACLE_MEM
+          value: '4000'
+        - name: ORACLE_CHARACTERSET
+          value: 'AL32UTF8'
+        - name: ORACLE_DISABLE_ASYNCH_IO
+          value: 'true'
+        - name: ORACLE_ALLOW_REMOTE
+          value: 'true'
+        - name: ORACLE_ENABLE_XDB
+          value: 'true'
+        resources:
+          requests: 
+            memory: 3G
+          limits: 
+            memory: 5Gi  
+      volumes:
+      - name: oradata
+        persistentVolumeClaim:
+          claimName: oradata
+      
+

@@ -2,9 +2,9 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: tmf622
-    service: tmf622  
-  name: tmf622
+    app: h2
+    service: h2  
+  name: h2
 spec:
   ports:
   - name: 8080-tcp
@@ -12,6 +12,6 @@ spec:
     protocol: TCP
     targetPort: 8080
   selector:
-    app: tmf622
+    app: h2
   sessionAffinity: None
   type: ClusterIP

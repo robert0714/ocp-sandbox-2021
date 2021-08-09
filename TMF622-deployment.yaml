@@ -13,16 +13,31 @@ spec:
     metadata:
       labels:
         app: tmf622
+      annotations:
+        prometheus.io/path: /actuator/prometheus
+        prometheus.io/port: '8080'
+        prometheus.io/scheme: http
+        prometheus.io/scrape: 'true'
+        sidecar.istio.io/inject: 'true'
     spec:
       containers:
       - name: tmf622
-        image: >-
-          image-registry.openshift-image-registry.svc:5000/robert0714-lee-dev/tmf622:latest
-        imagePullPolicy: Always
+        # image: image-registry.openshift-image-registry.svc:5000/robert0714-lee-dev/tmf622:latest
+        image: localhost/tmf622:latest
+        # imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent 
         livenessProbe:
           httpGet:
             path: /actuator/health/liveness
-            port: http
+            port: 8080
+          failureThreshold: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 10
         ports:
         - containerPort: 8080
         volumeMounts:
@@ -39,11 +54,15 @@ spec:
             resourceFieldRef:
               containerName: tmf622
               resource: limits.memory
+        - name: JAVA_OPTS
+          value: '-Xms1G -Xmx1536m -Dgit.branch=dev/milestone2'
         resources:
           requests: 
             memory: 1G
+            cpu: 250m
           limits: 
-            memory: 1.5Gi  
+            memory: 1.5Gi
+            cpu: 500m 
       volumes:
       - name: compares-data
         persistentVolumeClaim:

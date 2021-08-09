@@ -6,7 +6,7 @@ metadata:
   name: tmf622
 spec:
   port:
-    targetPort: 8080-tcp
+    targetPort: http
   wildcardPolicy: None
   to:
     kind: Service

@@ -1,0 +1,35 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: tmf622-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: tmf622
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - tmf622-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /cht
+    - uri:
+        prefix: /tmf-api
+    route:
+    - destination:
+        host: tmf622
+        port:
+          number: 8080

@@ -8,12 +8,13 @@
 
 wget https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz
 sudo tar -xvzf oc.tar.gz  
-sudo curl -L https://mirror.openshift.com/pub/openshift-v4/clients/odo/latest/odo-linux-amd64 -o /usr/local/bin/odo
-sudo chmod +x /usr/local/bin/odo
 sudo chmod +x  oc  kubectl 
 sudo mv oc /usr/local/bin/oc
 sudo mv kubectl /usr/local/bin/kubectl
 sudo usermod -aG docker $USER
+
+sudo curl -L https://mirror.openshift.com/pub/openshift-v4/clients/odo/latest/odo-linux-amd64 -o /usr/local/bin/odo
+sudo chmod +x /usr/local/bin/odo
 
 oc login --token=sha256~5XQJvUxMOcSrEBBVYl6ai7WH6SxjJMvte4C0ig7VD8w --server=https://api.sandbox.x8i5.p1.openshiftapps.com:6443
 
@@ -281,4 +282,31 @@ https://docs.openshift.com/container-platform/4.7/cli_reference/developer_cli_od
 
 ```
 http://service-name.namespace.svc.cluster.local:port-number
+```
+
+# AutoScaleing Test
+minikube preparation 
+```bash
+minikube -p a01  start --memory=10240 --cpus=4 --disk-size=30g 
+minikube -p a01  addons enable ingress
+minikube -p a01  addons enable metrics-server
+```
+add loadbalancer
+```bash
+minikube -p a01 kubectl -- label node a01  proxy=true
+
+
+git clone https://github.com/robert0714/keepalived.git 
+cd keepalived && git  checkout k8s-1.16  && cd ..
+
+minikube -p a01 kubectl -- create namespace keepalived
+
+helm install keepalived  keepalived \
+   --namespace keepalived \
+   --set keepalivedCloudProvider.serviceIPRange="$( minikube -p a01 ip)/24" \
+   --set nameOverride="lb"
+
+helm  -n keepalived list
+
+minikube -p a01 kubectl get svc
 ```

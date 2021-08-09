@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: oradata
+spec:
+  resources:
+    requests:
+      storage: 12Gi
+  volumeMode: Filesystem
+  #storageClassName: managed-nfs-storage 
+  accessModes:
+    - ReadWriteOnce

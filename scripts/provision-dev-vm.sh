@@ -75,3 +75,20 @@ sudo apt-get -y install podman
 sudo curl -L https://mirror.openshift.com/pub/openshift-v4/clients/helm/latest/helm-linux-amd64 -o /usr/local/bin/helm
 sudo chmod +x /usr/local/bin/helm
 helm version
+
+
+#
+# Install kubectl
+# 
+# curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+# curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+# echo "$(<kubectl.sha256) kubectl" | sha256sum --check
+# sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+# kubectl version --client
+
+
+# sudo apt-get update
+# sudo apt-get install -y apt-transport-https ca-certificates curl
+# echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+# sudo apt-get update
+# sudo apt-get install -y kubectl
