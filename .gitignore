@@ -22,3 +22,4 @@ build
 src
 *.tar
 oracledb-19.3/oracle_data
+*.tar.gz

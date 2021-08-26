@@ -48,7 +48,8 @@ sudo service docker restart
 wget https://github.com/wagoodman/dive/releases/download/v0.10.0/dive_0.10.0_linux_amd64.deb
 sudo apt-get install ./dive_0.10.0_linux_amd64.deb
  
-sudo apt-get install -yq jq
+sudo apt-get install -y  jq 
+sudo apt-get -y  install skopeo
 
 #
 # Install Podman.
@@ -75,6 +76,8 @@ sudo apt-get -y install podman
 sudo curl -L https://mirror.openshift.com/pub/openshift-v4/clients/helm/latest/helm-linux-amd64 -o /usr/local/bin/helm
 sudo chmod +x /usr/local/bin/helm
 helm version
+
+
 
 
 #

@@ -1,4 +1,26 @@
+# Requirement
+RAM 4G +
 
+## init configuration
+1.   username: system 
+2.   password: oracle
+
+```bash
+docker exec -it  xe19c  sqlplus system/oracle@ORCL
+SQL> show con_name;
+alter session set container=CDB$ROOT;
+CREATE USER c##RAADM_OWNER IDENTIFIED BY "oracle" DEFAULT TABLESPACE USERS TEMPORARY TABLESPACE TEMP;
+grant create session, grant any privilege to c##RAADM_OWNER;
+GRANT UNLIMITED TABLESPACE TO  c##RAADM_OWNER;
+GRANT CREATE ANY SEQUENCE, ALTER ANY SEQUENCE, DROP ANY SEQUENCE, SELECT ANY SEQUENCE TO  c##RAADM_OWNER ;
+grant create table, create database link to c##RAADM_OWNER;
+```
+## docker-compose usage
+```bash
+docker-compose up -d
+```
+
+## OCP usage
 https://pittar.medium.com/running-oracle-12c-on-openshift-container-platform-ca471a9f7057
 
 ```bash
@@ -40,6 +62,9 @@ subjects:
 ```
 
 ```bash
+oc apply -f anyuid-role.yaml
+oc -n bcrm2 import-image oracledb-19c:19.3.0-ee --from="quay.io/ballexaa/oracledb-19c:19.3.0-ee" --confirm --reference-policy=local
+
 $ oc process -f oracle19c-template.yaml | oc create -f -
 $ oc process -f oracle19c-template.yaml | oc delete -f -
 ```

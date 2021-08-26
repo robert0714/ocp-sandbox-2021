@@ -89,7 +89,7 @@ objects:
         - oracle19c
         from:
           kind: ImageStreamTag
-          name: oracle-database:19.3.0-ee
+          name: oracledb-19c:19.3.0-ee
       type: ImageChange
     - type: ConfigChange
   status: {}
