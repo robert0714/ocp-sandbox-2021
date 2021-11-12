@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluentd
+  namespace: kube-system
+  labels:
+    app: fluentd
+    version: v1
+spec:
+  selector:
+    matchLabels:
+        app: fluentd
+        version: v1
+  template:
+    metadata:
+      labels:
+        app: fluentd
+        version: v1
+    spec:
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      containers:
+      - name: fluentd
+        image: image-registry.openshift-image-registry.svc:5000/kube-system/fluentd:v1
+        env:
+          - name:  FLUENT_ELASTICSEARCH_HOST
+            value: "elasticsearch.logging"
+          - name:  FLUENT_ELASTICSEARCH_PORT
+            value: "9200"
+          - name: FLUENT_ELASTICSEARCH_SCHEME
+            value: "http"
+          - name: FLUENT_ELASTICSEARCH_SED_DISABLE
+            value: "true"
+        resources:
+          limits:
+            cpu: 500m
+            memory: 500Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+        - name: journal
+          mountPath: /var/log/journal
+          readOnly: true
+        - name: fluentd-extra-config
+          mountPath: /fluentd/etc/conf.d
+      volumes:
+      - name: varlog
+        persistentVolumeClaim:
+          claimName: fluentd-varlog
+      - name: varlibdockercontainers
+        persistentVolumeClaim:
+          claimName: fluentd-varlibdockercontainers
+      - name: journal
+        persistentVolumeClaim:
+          claimName: fluentd-journal
+      - name: fluentd-extra-config
+        configMap:
+          name: "fluentd-pdc-config"
+      terminationGracePeriodSeconds: 30
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fluentd-varlog
+  namespace: kube-system
+spec:
+  resources:
+    requests:
+      storage: 500Mi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fluentd-varlibdockercontainers
+  namespace: kube-system
+spec:
+  resources:
+    requests:
+      storage: 10Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fluentd-journal
+  namespace: kube-system
+spec:
+  resources:
+    requests:
+      storage: 10Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce

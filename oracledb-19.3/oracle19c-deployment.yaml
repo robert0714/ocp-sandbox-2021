@@ -54,6 +54,8 @@ spec:
           value: 'true'
         - name: ORACLE_ENABLE_XDB
           value: 'true'
+        - name: NLS_LANG
+          value: 'TRADITIONAL CHINESE_TAIWAN.AL32UTF8'
         resources:
           requests: 
             memory: 3G
