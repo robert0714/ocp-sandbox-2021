@@ -1,0 +1,14 @@
+alter session set container=CDB\$ROOT;
+drop user $user CASCADE;
+CREATE USER $user IDENTIFIED BY  oracle  DEFAULT TABLESPACE USERS TEMPORARY TABLESPACE TEMP;
+grant create session, grant any privilege to $user;
+GRANT UNLIMITED TABLESPACE TO  $user;
+GRANT CREATE ANY SEQUENCE, ALTER ANY SEQUENCE, DROP ANY SEQUENCE, SELECT ANY SEQUENCE TO $user;
+grant create table, create database link to $user;
+grant connect, resource to $user container=all ;
+
+alter session set container=orcl;
+grant create session, grant any privilege to  $user;
+GRANT CREATE ANY SEQUENCE, ALTER ANY SEQUENCE, DROP ANY SEQUENCE, SELECT ANY SEQUENCE TO  $user;
+grant create table, create database link to $user;
+alter user $user quota unlimited on users container=current;

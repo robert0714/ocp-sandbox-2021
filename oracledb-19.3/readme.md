@@ -6,14 +6,24 @@ RAM 4G +
 2.   password: oracle
 
 ```bash
+export  NLS_LANG='TRADITIONAL CHINESE_TAIWAN.AL32UTF8'
 docker exec -it  xe19c  sqlplus system/oracle@ORCL
+docker exec -it  xe19c  sys/oracle@ORCLCDB  as sysdba
 SQL> show con_name;
-alter session set container=CDB$ROOT;
-CREATE USER c##RAADM_OWNER IDENTIFIED BY "oracle" DEFAULT TABLESPACE USERS TEMPORARY TABLESPACE TEMP;
-grant create session, grant any privilege to c##RAADM_OWNER;
-GRANT UNLIMITED TABLESPACE TO  c##RAADM_OWNER;
-GRANT CREATE ANY SEQUENCE, ALTER ANY SEQUENCE, DROP ANY SEQUENCE, SELECT ANY SEQUENCE TO  c##RAADM_OWNER ;
-grant create table, create database link to c##RAADM_OWNER;
+alter session set container=CDB$ROOT; 
+drop user $user CASCADE;
+CREATE USER $user IDENTIFIED BY  oracle  DEFAULT TABLESPACE USERS TEMPORARY TABLESPACE TEMP;
+grant create session, grant any privilege to $user;
+GRANT UNLIMITED TABLESPACE TO  $user;
+GRANT CREATE ANY SEQUENCE, ALTER ANY SEQUENCE, DROP ANY SEQUENCE, SELECT ANY SEQUENCE TO $user;
+grant create table, create database link to $user;
+grant connect, resource to $user container=all ;
+
+alter session set container=orcl;
+grant create session, grant any privilege to  $user;
+GRANT CREATE ANY SEQUENCE, ALTER ANY SEQUENCE, DROP ANY SEQUENCE, SELECT ANY SEQUENCE TO  $user;
+grant create table, create database link to $user;
+alter user $user quota unlimited on users container=current;
 ```
 ## docker-compose usage
 ```bash

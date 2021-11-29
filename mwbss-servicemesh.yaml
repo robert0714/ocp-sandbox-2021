@@ -1,0 +1,51 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: mwbss-gateway
+spec:
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "mwbss-0000-istio-system.apps.ocp.iisi.test"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: mwbss-vs
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - mwbss-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /tmf-api/productOrderingManagement/v4/productOrder/check
+      route:
+        - destination:
+            host: pdc-check
+            port:
+              number: 8080
+    - match:
+        - uri:
+            prefix: /cht/validate
+        - uri:
+            prefix: /cht/transfer
+      route:
+        - destination:
+            host: pdc-validate
+            port:
+              number: 8080
+    - match:
+        - uri:
+            prefix: /pdc/search
+      route:
+        - destination:
+            host: pdc-search
+            port:
+              number: 8080

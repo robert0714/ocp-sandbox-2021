@@ -1,5 +1,4 @@
-version: '2'
- 
+version: '2' 
 services: 
   xe19c :
   # https://github.com/oracle/docker-images/tree/master/OracleDatabase/SingleInstance
@@ -19,11 +18,13 @@ services:
   # grant create table, create database link to c##RAADM_OWNER;
   #
     container_name: xe19c
-    image: oracle/database:19.3.0-ee
+    image:  quay.io/ballexaa/oracledb-19c:19.3.0-ee
     shm_size: 1g
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
-    - ${PWD}/oracle_data/data:/opt/oracle/oradata
+    - type: volume
+      source: oradata
+      target: /opt/oracle/oradata
     environment:
     - TZ=Asia/Taipei
     - ORACLE_PDB=orcl
@@ -40,3 +41,17 @@ services:
     ports: 
      - "1521:1521" 
      - "5500:5500"
+    init: true
+    healthcheck:
+      test: sql -L -S sys/oracle@localhost:1521/orcl as sysdba < /dev/null |grep 'ORA-'; if [[ $$? == 1 ]]; then echo 0; else echo 1; fi
+      interval: 1m
+      timeout: 10s
+      retries: 20
+      start_period: 40s
+volumes:
+  oradata:
+    driver: local
+    driver_opts:
+      type: none
+      device: $PWD/oradata
+      o: bind

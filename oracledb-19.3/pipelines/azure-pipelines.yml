@@ -1,0 +1,95 @@
+trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  DB_USER: 'c##BCRM9999'
+  FILE01: bcrm-oracle-part00.sql
+  FILE02: bcrm-oracle-part01.sql
+
+steps:
+  # 主機環境設定
+  - task: Bash@3
+    inputs:
+      targetType: 'inline'
+      script: |
+          sudo -- sh -c "echo '60.250.171.28    oauth-openshift.apps.ocp.iisi.test' >> /etc/hosts"
+          sudo -- sh -c "echo '60.250.171.28    api.ocp.iisi.test' >> /etc/hosts"
+          sudo -- sh -c "echo '60.250.171.28    sonarqube-sonarqube.apps.ocp.iisi.test' >> /etc/hosts"
+          sudo -- sh -c "echo '60.250.171.28    default-route-openshift-image-registry.apps.ocp.iisi.test' >> /etc/hosts"
+          sudo -- sh -c "echo '{\"insecure-registries\" : [\"default-route-openshift-image-registry.apps.ocp.iisi.test\"]}' > /etc/docker/daemon.json"
+          
+          cat /etc/hosts
+          echo '目前路徑'
+          pwd
+          
+          export BUILD_NUMBER=$(Build.BuildNumber)
+          echo 'build 編號  #'${BUILD_NUMBER}
+          
+          timedatectl
+          echo 'set timezone to Asia/Taipei'
+          sudo timedatectl set-timezone Asia/Taipei
+          timedatectl
+          
+          echo '查看docker daemon'
+          cat /etc/docker/daemon.json
+          sudo systemctl restart docker
+          sudo systemctl daemon-reload
+    displayName: 'set env' 
+  
+    
+  # Install oc so that it can be used within a 'script' or bash 'task'
+  - task: oc-setup@2
+    inputs:
+       openshiftService: 'ocp-4.7'
+       version: '4.7.37'
+       
+  # A script task making use of 'oc'
+  - script: |
+      oc project bcrm2
+      kubectl  get pods 
+      PODMAN=$( oc   get pods  --no-headers -o custom-columns=":metadata.name" --field-selector status.phase=Running |grep oracle)
+      echo $PODMAN
+      kubectl  exec -it  $PODMAN  --  bash -c "  rm -rf /tmp/*.sql "
+      kubectl  cp  bcrm-oracle-part00.sql   $PODMAN:/tmp/$(FILE01)
+      kubectl  cp  bcrm-oracle-part01.sql   $PODMAN:/tmp/$(FILE02)
+    displayName: 'copy data to pods'
+
+# A script task making use of 'oc'
+  - script: |
+      #!/bin/bash
+      # https://stackoverflow.com/questions/10277983/connect-to-sqlplus-in-a-shell-script-and-run-sql-scripts
+      acreds="$(DB_USER)"
+      schema="$(FILE01)"
+      data="$(FILE02)"
+
+
+      # render a template configuration file
+      # expand variables + preserve formatting
+      render_template() {
+        eval "echo \"$(cat $1)\""
+      }
+
+
+      runsql () {
+      PODMAN=$( kubectl   get pods  --no-headers -o custom-columns=":metadata.name" --field-selector status.phase=Running |grep oracle)
+      echo $PODMAN
+      echo   "********operating ->  $PODMAN ::$(date): <<<< executing command >>>>"
+      user=$1
+      render_template  user-template.txt > user-template.sql 
+      kubectl   cp  user-template.sql   $PODMAN:/tmp/user-template.sql
+      # param 1 is $1
+      kubectl   exec -it  $PODMAN  --  bash -c "
+          export  NLS_LANG='TRADITIONAL CHINESE_TAIWAN.AL32UTF8'
+          echo '@/tmp/user-template.sql;' |  sqlplus -s  sys/oracle@ORCLCDB  as sysdba    
+          echo '@/tmp/$2;' |  sqlplus -s   $1/oracle@orcl
+          echo '@/tmp/$3;' |  sqlplus -s   $1/oracle@orcl 
+          whoami
+      "
+      }
+
+      oc project bcrm2
+      runsql "$acreds" "$schema"  "$data"
+    displayName: 'use oc cli'
