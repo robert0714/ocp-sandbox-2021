@@ -17,14 +17,14 @@ kubectl exec -it  $PODMAN  --  bash -c "
     echo 'grant create session, grant any privilege to $1;' |  sqlplus -s  sys/oracle@ORCLCDB  as sysdba
     echo 'GRANT UNLIMITED TABLESPACE TO  $1;' |  sqlplus -s  sys/oracle@ORCLCDB  as sysdba
     echo 'GRANT CREATE ANY SEQUENCE, ALTER ANY SEQUENCE, DROP ANY SEQUENCE, SELECT ANY SEQUENCE TO $1;' |  sqlplus -s  sys/oracle@ORCLCDB  as sysdba
-    echo 'grant create table, create database link to $1;' |  sqlplus -s  sys/oracle@ORCLCDB  as sysdba
+    echo 'grant create table, create view , create database link to $1;' |  sqlplus -s  sys/oracle@ORCLCDB  as sysdba
     echo 'grant connect, resource to $1 container=all ;' |  sqlplus -s  sys/oracle@ORCLCDB  as sysdba
 
     echo 'alter session set container=orcl;' |  sqlplus -s  sys/oracle@ORCLCDB  as sysdba
     echo 'grant create session, grant any privilege to  $1;' |  sqlplus -s  sys/oracle@ORCLCDB  as sysdba
     echo 'GRANT UNLIMITED TABLESPACE TO $1;' |  sqlplus -s  sys/oracle@ORCLCDB  as sysdba
     echo 'GRANT CREATE ANY SEQUENCE, ALTER ANY SEQUENCE, DROP ANY SEQUENCE, SELECT ANY SEQUENCE TO  $1;' |  sqlplus -s  sys/oracle@ORCLCDB  as sysdba
-    echo 'grant create table, create database link to $1;' |  sqlplus -s  sys/oracle@ORCLCDB  as sysdba
+    echo 'grant create table, create view , create database link to $1;' |  sqlplus -s  sys/oracle@ORCLCDB  as sysdba
     echo 'alter user $1 quota unlimited on users container=current;' |  sqlplus -s  sys/oracle@ORCLCDB  as sysdba
 
     echo '@/tmp/$2;' |  sqlplus -s   $1/oracle@orcl
