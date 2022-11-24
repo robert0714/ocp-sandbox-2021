@@ -65,6 +65,18 @@ $ podman login -u kubeadmin -p $(oc whoami -t) --tls-verify=false $HOST
       podman push $HOST/ito-pdc/tmf622:$(Build.BuildNumber)  --tls-verify=false
     displayName: 'transport container image:$(Build.BuildNumber)  '
 ```
+#### Minikube can use the exposed the registry 
+If the route of openshift-image-registry  is **https://default-route-openshift-image-registry.apps.ocp.iisi.test/** .
+in wondows
+```shell
+eval $(minikube dokcer-env)
+winpty docker login default-route-openshift-image-registry.apps.ocp.iisi.test
+(username is admin)
+(password is the token: sha256~5XQJvUxMOcSrEBBVYl6ai7WH6SxjJMvte4C0ig7VD8w )
+
+docker image pull default-route-openshift-image-registry.apps.ocp.iisi.test/[namespace]/[image]:[tag]
+```
+
 ### Image Scheche import ? right now import ?
 ```
 oc -n ito-pdc import-image chttmf622.azurecr.io/tmf622:latest --from="chttmf622.azurecr.io/tmf622:latest" --confirm --reference-policy=local
