@@ -99,6 +99,31 @@ docker images --digests
 docker images --no-trunc --quiet $IMAGE
 docker images --no-trunc --quiet debian:stretch-slim
 ```
+### Image managment
+#### Delete specific tag
+* [reference](https://docs.openshift.com/container-platform/4.11/openshift_images/image-streams-manage.html#images-imagestream-remove-tag_image-streams-managing)
+* cli:
+```
+oc login --token=sha256~eOwSuGOVQqpNS0IEd9Z4UgOihJa9IOBnwRNjvSwfHdw --server=https://api.ocp.iisi.test:6443
+oc project d210641
+
+oc get is mordermtear -o jsonpath='{range.status.tags[*]}{.tag} '
+oc tag -d mordermtear:20220803.1
+
+for i in $(oc get is mordermtear -o jsonpath='{range.status.tags[*]}{.tag} ');
+do
+    echo $i;
+done
+```
+
+test:
+```
+for i in 20220902.2 20220906.1 20220907.3 20220908.1 20220908.2 20220908.3 20220908.4 20220912.1 20220912.2 20220913.1 20220915.1 20220915.3 20220916.1 20220919.1 20220920.1;
+do
+    oc tag -d mordermtear:$i;
+done
+```
+
 ### NFS Storage Class
 Take example about sysage. [https://github.com/kubernetes-retired/external-storage/tree/master/nfs-client]
 namespace: nfs-provisioner
