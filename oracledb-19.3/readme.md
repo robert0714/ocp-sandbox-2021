@@ -1,5 +1,8 @@
 # Requirement
 RAM 4G +
+```bash
+sudo chmod -R a+w  $PWD/oradata
+```
 
 ## init configuration
 1.   username: system 
