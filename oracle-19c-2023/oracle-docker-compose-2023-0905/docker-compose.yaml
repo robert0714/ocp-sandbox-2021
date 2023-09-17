@@ -1,0 +1,47 @@
+version: '2'
+services:
+  xe19c :
+    container_name: xe19c
+    image:  quay.io/ballexaa/oracledb-19c:19.3.0-ee
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    shm_size: 1g
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - $PWD/listener.ora:/opt/oracle/product/19c/dbhome_1/network/admin/listener.ora
+    - $PWD/tnsnames.ora:/opt/oracle/product/19c/dbhome_1/network/admin/tnsnames.ora
+    - type: volume
+      source: oradata
+      target: /opt/oracle/oradata
+    environment:
+    - TZ=Asia/Taipei
+    - ORACLE_SID=lst
+    - ORACLE_PDB=orcl
+    - ORACLE_PWD=oracle
+    - ORACLE_MEM=4000
+    - ORACLE_CHARACTERSET=ZHT16MSWIN950
+    - ORACLE_DISABLE_ASYNCH_IO=true
+    - ORACLE_ALLOW_REMOTE=true
+    - ORACLE_ENABLE_XDB=true
+    - processes=1000
+    - sessions=1105
+#    network_mode:  "host"
+    ports:
+     - "6443:1521"
+     - "5500:5500"
+    init: true
+    healthcheck:
+      test: sql -L -S sys/oracle@localhost:1521/orcl as sysdba < /dev/null |grep 'ORA-'; if [[ $$? == 1 ]]; then echo 0; else echo 1; fi
+      interval: 1m
+      timeout: 10s
+      retries: 20
+      start_period: 40s
+volumes:
+  oradata:
+    driver: local
+    driver_opts:
+      type: none
+      device: $PWD/oradata
+      o: bind
