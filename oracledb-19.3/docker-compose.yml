@@ -18,7 +18,7 @@ services:
   # grant create table, create database link to c##RAADM_OWNER;
   #
     container_name: xe19c
-    image:  quay.io/ballexaa/oracledb-19c:19.3.0-ee
+    image:  quay.io/robert0714_lee/oracledb-19c:19.3.0-ee
     shm_size: 1g
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock

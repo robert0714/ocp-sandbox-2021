@@ -2,7 +2,7 @@ version: '2'
 services:
   xe19c :
     container_name: xe19c
-    image:  quay.io/ballexaa/oracledb-19c:19.3.0-ee
+    image:  quay.io/robert0714_lee/oracledb-19c:19.3.0-ee
     ulimits:
       nofile:
         soft: 65536

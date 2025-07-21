@@ -76,7 +76,7 @@ subjects:
 
 ```bash
 oc apply -f anyuid-role.yaml
-oc -n bcrm2 import-image oracledb-19c:19.3.0-ee --from="quay.io/ballexaa/oracledb-19c:19.3.0-ee" --confirm --reference-policy=local
+oc -n bcrm2 import-image oracledb-19c:19.3.0-ee --from="quay.io/robert0714_lee/oracledb-19c:19.3.0-ee" --confirm --reference-policy=local
 
 $ oc process -f oracle19c-template.yaml | oc create -f -
 $ oc process -f oracle19c-template.yaml | oc delete -f -
